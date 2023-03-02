@@ -127,3 +127,10 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# local additions
+.env
+bin/
+lib/
+lib64
+

@@ -1,0 +1,9 @@
+[Unit]
+Description=gunicorn002 socket
+
+[Socket]
+ListenStream=/run/gunicorn002.sock
+
+[Install]
+WantedBy=sockets.target
+

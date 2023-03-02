@@ -1,0 +1,24 @@
+# befor using: expand $USER, $GROUP, $HOME
+
+[Unit]
+Description=gunicorn002 daemon
+Requires=gunicorn002.socket
+After=network.target
+
+# set user and group
+[Service]
+Type=notify
+User=$USER
+Group=$GROUP
+RuntimeDirectory=gunicorn002
+# expand $HOME
+WorkingDirectory=$HOME/DEV/Django/NodesInContext/pNic
+ExecStart=$HOME/DEV/Django/NodesInContext/bin/gunicorn --access-logfile - --workers 3 --timeout 600 --bind unix:/run/gunicorn002.sock pNic.wsgi:application
+ExecReload=/bin/kill -s HUP
+KillMode=mixed
+TimeoutStopSec=5
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
+
