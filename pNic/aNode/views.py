@@ -1,7 +1,8 @@
 from rest_framework import viewsets
 from rest_framework import permissions
 from rest_framework import generics
-from rest_framework import filters
+
+# from rest_framework import filters
 
 from aNode.models import EdgeType
 from aNode.models import NodeType
@@ -14,6 +15,7 @@ from aNode.serializers import NodeTypeSerializer
 from aNode.serializers import EdgeSerializer
 
 from django_filters.rest_framework import DjangoFilterBackend
+import django_filters
 
 
 class NodeTypeViewSet(viewsets.ModelViewSet):
@@ -74,12 +76,27 @@ class NodeViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
 
+class NodeFilter(django_filters.FilterSet):
+    # name = django_filters.CharFilter(lookup_expr="iexact")
+    name = django_filters.CharFilter(lookup_expr="icontains")
+
+    class Meta:
+        model = Node
+        fields = [
+            "name",
+            "nType",
+            "parent",
+        ]
+
+
 class NodeAPIView(generics.ListAPIView):
     filter_backends = [DjangoFilterBackend]
     queryset = Node.objects.all()
     serializer_class = NodeSerializer
     permission_classes = [permissions.IsAuthenticated]
-    filterset_fields = [
-        "name",
-        "nType",
-    ]
+    filterset_class = NodeFilter
+    #    filterset_fields = [
+    #        "name",
+    #        "nType",
+    #        "parent",
+    #    ]
