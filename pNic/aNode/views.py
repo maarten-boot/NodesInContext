@@ -24,7 +24,7 @@ class NodeTypeViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
 
-class NodeTypeAPIView(generics.ListAPIView):
+class NodeTypeAPIView(generics.ListCreateAPIView):
     # search_fields = ["name"]
     # filter_backends = (filters.SearchFilter,)
     filter_backends = [DjangoFilterBackend]
@@ -42,7 +42,7 @@ class EdgeTypeViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
 
-class EdgeTypeAPIView(generics.ListAPIView):
+class EdgeTypeAPIView(generics.ListCreateAPIView):
     filter_backends = [DjangoFilterBackend]
     queryset = EdgeType.objects.all()
     serializer_class = EdgeTypeSerializer
@@ -58,7 +58,7 @@ class EdgeViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
 
-class EdgeAPIView(generics.ListAPIView):
+class EdgeAPIView(generics.ListCreateAPIView):
     filter_backends = [DjangoFilterBackend]
     queryset = Edge.objects.all()
     serializer_class = EdgeSerializer
@@ -89,7 +89,7 @@ class NodeFilter(django_filters.FilterSet):
         ]
 
 
-class NodeAPIView(generics.ListAPIView):
+class NodeAPIView(generics.ListCreateAPIView):
     filter_backends = [DjangoFilterBackend]
     queryset = Node.objects.all()
     serializer_class = NodeSerializer

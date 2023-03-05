@@ -9,6 +9,7 @@
 
 source $HOME/DEV/Django/NodesInContext/bin/activate
 # sudo service gunicorn002 restart
+# ./manage.py spectacular --color --file schema.yml
 
 pip install --upgrade pip
 
@@ -26,6 +27,7 @@ pip install django_auth_ldap
 pip install djangorestframework
 pip install markdown       # Markdown support for the browsable API.
 pip install django-filter  # Filtering support
+pip install drf-spectacular
 
 # sudo service gunicorn002 restart
 

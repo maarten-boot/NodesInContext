@@ -1,0 +1,784 @@
+openapi: 3.0.3
+info:
+  title: Your Project API
+  version: 1.0.0
+  description: Your project description
+paths:
+  /api/aNode/Edge/:
+    get:
+      operationId: aNode_Edge_list
+      parameters:
+      - in: query
+        name: eType
+        schema:
+          type: integer
+      - in: query
+        name: fromNode
+        schema:
+          type: integer
+      - in: query
+        name: toNode
+        schema:
+          type: integer
+      tags:
+      - aNode
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Edge'
+          description: ''
+    post:
+      operationId: aNode_Edge_create
+      tags:
+      - aNode
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Edge'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Edge'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Edge'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Edge'
+          description: ''
+  /api/aNode/Edge/{id}/:
+    get:
+      operationId: aNode_Edge_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this edge.
+        required: true
+      tags:
+      - aNode
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Edge'
+          description: ''
+    put:
+      operationId: aNode_Edge_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this edge.
+        required: true
+      tags:
+      - aNode
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Edge'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Edge'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Edge'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Edge'
+          description: ''
+    patch:
+      operationId: aNode_Edge_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this edge.
+        required: true
+      tags:
+      - aNode
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedEdge'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedEdge'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedEdge'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Edge'
+          description: ''
+    delete:
+      operationId: aNode_Edge_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this edge.
+        required: true
+      tags:
+      - aNode
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/aNode/EdgeType/:
+    get:
+      operationId: aNode_EdgeType_list
+      parameters:
+      - in: query
+        name: name
+        schema:
+          type: string
+      tags:
+      - aNode
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EdgeType'
+          description: ''
+    post:
+      operationId: aNode_EdgeType_create
+      tags:
+      - aNode
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EdgeType'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/EdgeType'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/EdgeType'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EdgeType'
+          description: ''
+  /api/aNode/EdgeType/{id}/:
+    get:
+      operationId: aNode_EdgeType_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this edge type.
+        required: true
+      tags:
+      - aNode
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EdgeType'
+          description: ''
+    put:
+      operationId: aNode_EdgeType_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this edge type.
+        required: true
+      tags:
+      - aNode
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EdgeType'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/EdgeType'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/EdgeType'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EdgeType'
+          description: ''
+    patch:
+      operationId: aNode_EdgeType_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this edge type.
+        required: true
+      tags:
+      - aNode
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedEdgeType'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedEdgeType'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedEdgeType'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EdgeType'
+          description: ''
+    delete:
+      operationId: aNode_EdgeType_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this edge type.
+        required: true
+      tags:
+      - aNode
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/aNode/Node/:
+    get:
+      operationId: aNode_Node_list
+      parameters:
+      - in: query
+        name: nType
+        schema:
+          type: integer
+      - in: query
+        name: name
+        schema:
+          type: string
+      - in: query
+        name: parent
+        schema:
+          type: integer
+      tags:
+      - aNode
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Node'
+          description: ''
+    post:
+      operationId: aNode_Node_create
+      tags:
+      - aNode
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Node'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Node'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Node'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Node'
+          description: ''
+  /api/aNode/Node/{id}/:
+    get:
+      operationId: aNode_Node_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this node.
+        required: true
+      tags:
+      - aNode
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Node'
+          description: ''
+    put:
+      operationId: aNode_Node_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this node.
+        required: true
+      tags:
+      - aNode
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Node'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Node'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Node'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Node'
+          description: ''
+    patch:
+      operationId: aNode_Node_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this node.
+        required: true
+      tags:
+      - aNode
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedNode'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedNode'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedNode'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Node'
+          description: ''
+    delete:
+      operationId: aNode_Node_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this node.
+        required: true
+      tags:
+      - aNode
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/aNode/NodeType/:
+    get:
+      operationId: aNode_NodeType_list
+      parameters:
+      - in: query
+        name: name
+        schema:
+          type: string
+      tags:
+      - aNode
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/NodeType'
+          description: ''
+    post:
+      operationId: aNode_NodeType_create
+      tags:
+      - aNode
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NodeType'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/NodeType'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/NodeType'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NodeType'
+          description: ''
+  /api/aNode/NodeType/{id}/:
+    get:
+      operationId: aNode_NodeType_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this node type.
+        required: true
+      tags:
+      - aNode
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NodeType'
+          description: ''
+    put:
+      operationId: aNode_NodeType_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this node type.
+        required: true
+      tags:
+      - aNode
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NodeType'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/NodeType'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/NodeType'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NodeType'
+          description: ''
+    patch:
+      operationId: aNode_NodeType_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this node type.
+        required: true
+      tags:
+      - aNode
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedNodeType'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedNodeType'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedNodeType'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NodeType'
+          description: ''
+    delete:
+      operationId: aNode_NodeType_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this node type.
+        required: true
+      tags:
+      - aNode
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '204':
+          description: No response body
+components:
+  schemas:
+    Edge:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        description:
+          type: string
+          nullable: true
+        eType:
+          type: integer
+        fromNode:
+          type: integer
+        toNode:
+          type: integer
+        payLoad:
+          type: object
+          additionalProperties: {}
+          nullable: true
+      required:
+      - eType
+      - fromNode
+      - id
+      - toNode
+    EdgeType:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 128
+        description:
+          type: string
+          nullable: true
+      required:
+      - id
+      - name
+    Node:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 128
+        description:
+          type: string
+          nullable: true
+        nType:
+          type: integer
+        parent:
+          type: integer
+          nullable: true
+        payLoad:
+          type: object
+          additionalProperties: {}
+          nullable: true
+      required:
+      - id
+      - nType
+      - name
+      - parent
+    NodeType:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 128
+        description:
+          type: string
+          nullable: true
+      required:
+      - id
+      - name
+    PatchedEdge:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        description:
+          type: string
+          nullable: true
+        eType:
+          type: integer
+        fromNode:
+          type: integer
+        toNode:
+          type: integer
+        payLoad:
+          type: object
+          additionalProperties: {}
+          nullable: true
+    PatchedEdgeType:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 128
+        description:
+          type: string
+          nullable: true
+    PatchedNode:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 128
+        description:
+          type: string
+          nullable: true
+        nType:
+          type: integer
+        parent:
+          type: integer
+          nullable: true
+        payLoad:
+          type: object
+          additionalProperties: {}
+          nullable: true
+    PatchedNodeType:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 128
+        description:
+          type: string
+          nullable: true
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: sessionid
