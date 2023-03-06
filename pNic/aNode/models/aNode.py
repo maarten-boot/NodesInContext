@@ -8,9 +8,11 @@ from .aNodeType import NodeType
 
 class Node(AbsCommonName):
     # context = models.ForeignKey(Context, on_delete=models.RESTRICT, null=True, blank=True)
+    name = models.CharField(max_length=128, unique=False, null=False)
+
     parent = models.ForeignKey(
         "self",
-        on_delete=models.RESTRICT,
+        on_delete=models.CASCADE,
         null=True,
         blank=True,
         related_name="parentNode",
@@ -18,7 +20,7 @@ class Node(AbsCommonName):
 
     nType = models.ForeignKey(
         NodeType,
-        on_delete=models.RESTRICT,
+        on_delete=models.CASCADE,
     )
     payLoad = models.JSONField(
         encoder=None,

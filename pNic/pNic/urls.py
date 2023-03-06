@@ -21,6 +21,7 @@ from django.contrib import admin
 from django.urls import (
     include,
     path,
+    re_path,
 )
 
 from rest_framework import routers
@@ -40,6 +41,8 @@ urlpatterns = [
     path("admin/", admin.site.urls, name="admin"),
     path("", include("aMain.urls")),
     #
+    re_path(r"^api/aNode/NodeType/$", views.NodeTypeAPIView.as_view(), name="nodetype_list"),
+    path("api/aNode/NodeType/name=<str:name>", views.NodeTypeAPIView.as_view()),
     path("api/aNode/NodeType/", views.NodeTypeAPIView.as_view()),
     path("api/aNode/EdgeType/", views.EdgeTypeAPIView.as_view()),
     path("api/aNode/Node/", views.NodeAPIView.as_view()),
@@ -48,8 +51,8 @@ urlpatterns = [
     path("", include(router.urls)),
     path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
     # YOUR PATTERNS
-    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+    path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
     # Optional UI:
-    path('api/schema/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
-    path('api/schema/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
+    path("api/schema/swagger-ui/", SpectacularSwaggerView.as_view(url_name="schema"), name="swagger-ui"),
+    path("api/schema/redoc/", SpectacularRedocView.as_view(url_name="schema"), name="redoc"),
 ]

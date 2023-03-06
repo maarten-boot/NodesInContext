@@ -33,6 +33,7 @@ class EdgeType(admin.ModelAdmin):
 @admin.register(Edge)
 class Edge(admin.ModelAdmin):
     list_display = (
+        "id",
         "fromNode",
         "eType",
         "toNode",
@@ -41,7 +42,10 @@ class Edge(admin.ModelAdmin):
         "updStamp",
     )
     list_per_page = 50
-    search_fields = ("name",)
+    search_fields = (
+        "fromNode__name",
+        "toNode__name",
+    )
     list_filter = (
         "updStamp",
         "eType",

@@ -8,7 +8,7 @@ from .aNode import Node
 class Edge(AbsBase):
     fromNode = models.ForeignKey(Node, on_delete=models.CASCADE, related_name="fromNode")
     toNode = models.ForeignKey(Node, on_delete=models.CASCADE, related_name="toNode")
-    eType = models.ForeignKey(EdgeType, on_delete=models.RESTRICT)
+    eType = models.ForeignKey(EdgeType, on_delete=models.CASCADE)
     #
     description = models.TextField(blank=True, null=True)
     payLoad = models.JSONField(
