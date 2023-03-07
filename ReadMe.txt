@@ -10,6 +10,7 @@
 source $HOME/DEV/Django/NodesInContext/bin/activate
 # sudo service gunicorn002 restart
 # ./manage.py spectacular --color --file schema.yml
+# ./manage.py generateschema --file openapi-schema.yml
 
 pip install --upgrade pip
 

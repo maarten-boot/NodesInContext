@@ -15,159 +15,9 @@ class NodesInContextSchemaPathMissing(NodesInContextExceptions):
     pass
 
 
-SPEC: str = """
-components:
-  schemas:
-    Edge:
-      type: object
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        description:
-          type: string
-          nullable: true
-        eType:
-          type: integer
-        fromNode:
-          type: integer
-        toNode:
-          type: integer
-        payLoad:
-          type: object
-          additionalProperties: {}
-          nullable: true
-      required:
-      - eType
-      - fromNode
-      - id
-      - toNode
-    EdgeType:
-      type: object
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        name:
-          type: string
-          maxLength: 128
-        description:
-          type: string
-          nullable: true
-      required:
-      - id
-      - name
-    Node:
-      type: object
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        name:
-          type: string
-          maxLength: 128
-        description:
-          type: string
-          nullable: true
-        nType:
-          type: integer
-        parent:
-          type: integer
-          nullable: true
-        payLoad:
-          type: object
-          additionalProperties: {}
-          nullable: true
-      required:
-      - id
-      - nType
-      - name
-      - parent
-    NodeType:
-      type: object
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        name:
-          type: string
-          maxLength: 128
-        description:
-          type: string
-          nullable: true
-      required:
-      - id
-      - name
-    PatchedEdge:
-      type: object
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        description:
-          type: string
-          nullable: true
-        eType:
-          type: integer
-        fromNode:
-          type: integer
-        toNode:
-          type: integer
-        payLoad:
-          type: object
-          additionalProperties: {}
-          nullable: true
-    PatchedEdgeType:
-      type: object
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        name:
-          type: string
-          maxLength: 128
-        description:
-          type: string
-          nullable: true
-    PatchedNode:
-      type: object
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        name:
-          type: string
-          maxLength: 128
-        description:
-          type: string
-          nullable: true
-        nType:
-          type: integer
-        parent:
-          type: integer
-          nullable: true
-        payLoad:
-          type: object
-          additionalProperties: {}
-          nullable: true
-    PatchedNodeType:
-      type: object
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        name:
-          type: string
-          maxLength: 128
-        description:
-          type: string
-          nullable: true
-"""
-
-
 class NodesInContext:
     verbose: bool = False
-    spec: dict
+    schema: dict
 
     host: str
     proto: str
@@ -179,55 +29,51 @@ class NodesInContext:
 
     def __init__(
         self,
-        verbose: bool = False,
-    ):
-        self.verbose = verbose
-
-        self.spec = yaml.safe_load(SPEC)
-        if self.verbose:
-            print(self.spec, file=sys.stderr)
-
-    def getSchema(self, name: str):
-        path = ["components", "schemas", name]
-        z = self.spec
-        for n in path:
-            z = z.get(n)
-            if z is None:
-                s = ".".join(path)
-                msg: str = f"missing path: {s}"
-                raise NodesInContextSchemaPathMissing(msg)
-
-        req = z.get("required")
-        prop = z.get("properties")
-
-        return (prop, req)
-
-    def setAccesData(
-        self,
         host: str,
         user: str,
         passw: str,
         proto: str = "https",
         port: int = 443,
+        verbose: bool = False,
     ):
+        self.verbose = verbose
+
         self.host = host
-        self.proto = host
-        self.port = host
+        self.proto = proto
+        self.port = port
         self.user = user
         self.passw = passw
-        self.baseUrl = f"{proto}://{user}:{passw}@{host}:{port}/"
 
-    def getBaseUrl(self):
-        return f"{self.baseUrl}api/aNode"
+        self.baseUrl = self.getBaseUrl()
+        self.schema = self.getSchemaFromHost()
 
-    def getAllOrByName(self, url: str, name: str | None):
-        if name:
-            url = url + f"?name={name}"
+    def __getJson(
+        self,
+        url: str,
+    ):
         r = requests.get(url)
-        data = r.json()
+
+        data = None
+        if r.status_code >= 200 and r.status_code <= 300:
+            data = r.json()
+
         return data
 
-    def post(self, url: str, data: dict):
+    def __getText(
+        self,
+        url: str,
+    ):
+        r = requests.get(url)
+        data = None
+        if r.status_code >= 200 and r.status_code <= 300:
+            data = r.text
+        return data
+
+    def __post(
+        self,
+        url: str,
+        data: dict,
+    ):
         headers = {
             "Content-type": "application/json",
             "Accept": "application/json",
@@ -242,6 +88,51 @@ class NodesInContext:
             return r.status_code, r.json()
 
         return r.status_code, r.text
+
+    def getSchemaFromName(
+        self,
+        typeName: str,
+    ):
+        path = ["components", "schemas", typeName]
+        z = self.schema
+        for n in path:
+            z = z.get(n)
+            if z is None:
+                s = ".".join(path)
+                msg: str = f"missing path: {s}"
+                raise NodesInContextSchemaPathMissing(msg)
+
+        req = z.get("required")
+        prop = z.get("properties")
+
+        if self.verbose:
+            print(f"required: {req}", file=sys.stderr)
+            print(f"properties of {typeName}: {prop}", file=sys.stderr)
+
+        return (prop, req)
+
+    def getBaseUrl(self):
+        baseUrl = f"{self.proto}://{self.user}:{self.passw}@{self.host}:{self.port}/"
+        return baseUrl
+
+    def getBaseUrlApp(self):
+        return f"{self.baseUrl}api/aNode"
+
+    def getSchemaFromHost(self):
+        url = f"{self.baseUrl}api/schema"
+        text = self.__getText(url)
+        schema = yaml.safe_load(text)
+        return schema
+
+    def getAllOrByName(
+        self,
+        url: str,
+        name: str | None,
+    ):
+        if name:
+            url = url + f"?name={name}"
+        r = self.__getJson(url)
+        return r
 
     def getInfo(
         self,
@@ -258,7 +149,7 @@ class NodesInContext:
             msg = f"typeNem not known: {typeName}"
             raise NodesInContextUnsupportedApiType(msg)
 
-        url = f"{self.getBaseUrl()}/{typeName}/"
+        url = f"{self.getBaseUrlApp()}/{typeName}/"
         return self.getAllOrByName(url, name)
 
     def getEdgeInfo(
@@ -270,12 +161,12 @@ class NodesInContext:
         # url = f"{self.getBaseUrl()}/Edge/"
         pass
 
-    def cre(self, typeName, **kwargs):
-        prop, req = self.getSchema(typeName)
-
-        if self.verbose:
-            print(f"required: {req}", file=sys.stderr)
-            print(f"properties of {typeName}: {prop}", file=sys.stderr)
+    def cre(
+        self,
+        typeName,
+        **kwargs,
+    ):
+        prop, req = self.getSchemaFromName(typeName)
 
         # start with a empry data
         data = {}
@@ -306,13 +197,10 @@ class NodesInContext:
             print(data, file=sys.stderr)
 
         url = f"{self.getBaseUrl()}/{typeName}/"
-        r = self.post(
+        r = self.__post(
             url=url,
             data=data,
         )
-
-        if self.verbose:
-            print(r, file=sys.stderr)
 
         return r
 
