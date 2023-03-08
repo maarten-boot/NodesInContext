@@ -105,6 +105,7 @@ class HavingSchema:
 
     types: list
     patched: list
+    queryData: dict
 
     def __init__(
         self,
@@ -160,6 +161,33 @@ class HavingSchema:
             print(f"properties of {typeName}: {prop}", file=sys.stderr)
 
         return (prop, req)
+
+    def getQueryData(self):
+        result = {}
+        zz = self.getSchemaFromHost()
+        for path in zz.get("paths"):
+            curr = zz["paths"][path]
+            for rType in curr:
+                if rType != "get":
+                    continue
+
+                paramList = curr[rType].get("parameters")
+                if paramList is None:
+                    continue
+
+                for param in paramList:
+                    if param.get("in") != "query":
+                        continue
+
+                    item = path.split("/")[-2]
+                    field = param.get("name")
+                    sche = param.get("schema")
+                    if item not in result:
+                        result[item] = {}
+                    result[item][field] = sche
+
+        self.queryData = result
+        return result
 
 
 class NodesInContext(
@@ -268,3 +296,6 @@ class NodesInContext(
             print(rr, file=sys.stderr)
 
         return rr
+
+
+# http://localhost:82/api/aNode/Edge/?eType=8&fromNode=6803&toNode=6805
