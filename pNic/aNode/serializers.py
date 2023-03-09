@@ -14,6 +14,7 @@ class NodeTypeSerializer(serializers.ModelSerializer):
             "id",
             "name",
             "description",
+            "updStamp",
         ]
 
 
@@ -24,6 +25,7 @@ class EdgeTypeSerializer(serializers.ModelSerializer):
             "id",
             "name",
             "description",
+            "updStamp",
         ]
 
 
@@ -37,6 +39,7 @@ class EdgeSerializer(serializers.ModelSerializer):
             "fromNode",
             "toNode",
             "payLoad",
+            "updStamp",
         ]
 
 
@@ -50,4 +53,5 @@ class NodeSerializer(serializers.ModelSerializer):
             "nType",
             "parent",
             "payLoad",
+            "updStamp",
         ]
