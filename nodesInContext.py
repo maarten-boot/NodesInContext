@@ -3,6 +3,7 @@ import yaml
 import sys
 import logging
 from requests.auth import HTTPBasicAuth
+from urllib3.exceptions import InsecureRequestWarning
 
 
 class NodesInContextExceptions(Exception):
@@ -29,6 +30,9 @@ class UsingUrlData:
     baseUrl: str
 
     def __init__(self, verbose: bool = False):
+        super().__init__()
+
+        requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
         self.verbose = verbose
 
     def validResponse(self, code):
@@ -38,7 +42,7 @@ class UsingUrlData:
         if self.verbose:
             print(url, file=sys.stderr)
 
-        r = requests.get(url, auth=self.auth)
+        r = requests.get(url, auth=self.auth, verify=False)
         if self.validResponse(r.status_code):
             return r.status_code, r.json()
         return r.status_code, r.text
@@ -47,7 +51,7 @@ class UsingUrlData:
         if self.verbose:
             print(url, file=sys.stderr)
 
-        r = requests.get(url, auth=self.auth)
+        r = requests.get(url, auth=self.auth, verify=False)
         if self.validResponse(r.status_code):
             return r.status_code, r.text
         return r.status_code, r.text
@@ -63,11 +67,11 @@ class UsingUrlData:
             print(data, file=sys.stderr)
 
         if what == "post":
-            r = requests.post(url, json=data, headers=headers, auth=self.auth)
+            r = requests.post(url, json=data, headers=headers, auth=self.auth, verify=False)
         elif what == "put":
-            r = requests.put(url, json=data, headers=headers, auth=self.auth)
+            r = requests.put(url, json=data, headers=headers, auth=self.auth, verify=False)
         elif what == "patch":
-            r = requests.patch(url, json=data, headers=headers, auth=self.auth)
+            r = requests.patch(url, json=data, headers=headers, auth=self.auth, verify=False)
         else:
             msg = f"Fatal: unknown verb: {what}"
             print(msg, file=sys.stderr)
@@ -132,6 +136,7 @@ class HavingSchema:
         self,
         verbose: bool = False,
     ):
+        super().__init__()
         self.verbose = verbose
 
     def getSchemaFromHost(self):
@@ -228,6 +233,7 @@ class NodesInContext(
         verbose: bool = False,
     ):
         super().__init__(verbose=verbose)
+
         self.verbose = verbose
         if 0:
             logging.warning("Watch out!")
@@ -400,7 +406,7 @@ class NodesInContext(
             raise NodesInContextUnsupportedApiType(f" multiple returns {s, rr} :: {what} {data} {rr}")
 
         if len(rr) == 1:
-            if force == False:
+            if force is False:
                 if not self.dataHasChanged(data, rr[0]):
                     if self.verbose:
                         print(f"no change for {what}, {rr[0]['id']}", file=sys.stderr)

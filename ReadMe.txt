@@ -42,7 +42,7 @@ ALTER ROLE inventorydb SET default_transaction_isolation TO 'read committed';
 ALTER ROLE inventorydb SET timezone TO 'UTC';
 
 # cd ./DEV/Django/NodesInContext
-# django-admin createproject pNic
+# django-admin startproject pNic
 # cd ./pNic
 
 sudo systemctl daemon-reload
