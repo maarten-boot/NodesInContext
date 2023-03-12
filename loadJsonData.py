@@ -27,102 +27,6 @@ def setupAppNodesInContext(verbose: bool = False):
     return nic
 
 
-def creXtype(
-    nic,
-    typeName: str,
-    typeCache: dict,
-    name: str,
-):
-    """
-    create a new type and update the cache if it is not already in the cache
-    """
-    if name in typeCache:
-        return
-
-    s, r = nic.create(typeName=typeName, name=name)
-    if nic.validResponse(s):
-        typeCache[name] = r.get("id")
-
-
-def doNode(
-    nic,
-    item: dict,
-    nodeTypeCache: dict,
-    parent: int,
-):
-    print(item)
-
-    what = "Node"
-    xx = item.get("name")
-    if xx is None:
-        print(f"ERROR: {item}", file=sys.stderr)
-        exit(101)
-
-    nodeType = item.get("nType")
-    creXtype(nic, "NodeType", nodeTypeCache, nodeType)
-
-    data: dict = {
-        "name": xx,
-        "nType": nodeTypeCache[nodeType],
-        "parent": parent,
-        "description": item.get("description"),
-        "payLoad": item.get("payLoad") or item,
-    }
-    print(data)
-    nic.getAndUpdateOrInsert(what, data, force=True)
-
-
-def doEdge(nic, item: list, edgeTypeCache: dict, nodeCache: dict):
-    what = "Edge"
-    if item[0] not in nodeCache or item[1] not in nodeCache:
-        return
-
-    edgeType = item[2]
-    creXtype(nic, "EdgeType", edgeTypeCache, edgeType)
-
-    data: dict = {
-        "fromNode": nodeCache[item[0]],
-        "toNode": nodeCache[item[1]],
-        "eType": edgeTypeCache[item[2]],
-        "description": "",
-        "payLoad": item,
-    }
-
-    nic.getAndUpdateOrInsert(what, data, force=True)
-
-
-def findParent(nic, parentPath):
-    parents = parentPath.split(".")
-    if parents[0] == "":
-        parents = parents[1:]
-    print(parents)
-
-    nodeCache = nic.getAllByName(typeName="Node")
-    for parent in parents:
-        parentId = nodeCache[parent]
-        if parentId is None:
-            print(f"Fatal: parent not found: {parentPath}", file=sys.stderr)
-            exit(101)
-        print(parent, parentId)
-
-    return parentId
-
-
-def addNodesAndEdgesFromJsonData(nic, parentId: str, data: dict, verbose: bool = False):
-    nodeCache = {}
-
-    if "nodes" in data:
-        nodeTypeCache = nic.getAllByName(typeName="NodeType")
-        for item in data["nodes"]:
-            nodeId = doNode(nic, item, nodeTypeCache, parentId)
-            nodeCache[item["name"]] = nodeId
-
-    if "edges" in data:
-        edgeTypeCache = nic.getAllByName(typeName="EdgeType")
-        for item in data["edges"]:
-            doEdge(nic, item, edgeTypeCache, nodeCache)
-
-
 def loadJsonDataFromFile(fileName: str) -> dict:
     data: dict = {}
     with open(fileName) as f:
@@ -137,6 +41,10 @@ def usage():
 {sys.argv[0]}:
     --input <filename>  ; mandatory
         load the json file into the database specified by the .env data
+
+    --ParentPath <ParentPathSring>  ; mandatory
+        the namespace where the data will be loaded, the path will be created if needed [TODO]
+        example .MyCompanyName.MyLoader
 
     --verbose           ; optional.
         if present switches on verbose reporting in the program, often used only for debugging.
@@ -162,29 +70,35 @@ VERBOSE=True
     )
 
 
-def doOptions():
+def parseOptions():
     try:
         opts, args = getopt.getopt(
             sys.argv[1:],
-            "vhudi:",
+            "vhudi:P:",
             [
                 "verbose",
                 "help",
                 "update",
                 "delete",
                 "inFile=",
+                "ParentPath=",
             ],
         )
+        return opts, args
     except getopt.GetoptError as err:
         print(err)
         usage()
         sys.exit(2)
 
+
+def doOptions():
+    opts, args = parseOptions()
+
     verbose = False
     update = False
     delete = False
     inFile = None
-    print(opts, args)
+    parentPath = None
 
     for o, a in opts:
         if o == "-v":
@@ -198,6 +112,8 @@ def doOptions():
             delete = True
         elif o in ("-i", "--inFile"):
             inFile = a
+        elif o in ("-P", "--ParentPath"):
+            parentPath = a
         else:
             assert False, "unhandled option"
 
@@ -206,20 +122,25 @@ def doOptions():
         usage()
         sys.exit(1)
 
-    return (verbose, inFile, update, delete)
+    if parentPath is None:
+        print("you must specify a ParentPath with -P or --ParentPath")
+        usage()
+        sys.exit(1)
+
+    return (verbose, inFile, update, delete, parentPath)
 
 
 def xMain():
-    (verbose, inFile, update, delete) = doOptions()
-    verbose: bool = env.bool("VERBOSE", False)
+    (verbose, inFile, update, delete, parentPath) = doOptions()
+    if bool(verbose) is False:
+        verbose: bool = env.bool("VERBOSE", False)
 
-    data: dict = loadJsonDataFromFile("testfileJsonData.json")
+    data: dict = loadJsonDataFromFile(inFile)
 
     nic = setupAppNodesInContext(verbose)
 
-    parentPath = ".ReversingLabs.HublyData"
-    parentId = findParent(nic, parentPath)
-    addNodesAndEdgesFromJsonData(nic, parentId, data, verbose)
+    parentId = nic.findParent(parentPath)
+    nic.addNodesAndEdgesFromJsonData(parentId, data, verbose, update)
 
 
 env = environ.Env()
